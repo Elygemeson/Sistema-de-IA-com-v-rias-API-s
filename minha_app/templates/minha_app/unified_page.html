@@ -1,0 +1,250 @@
+<!--
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicação de IA do Elizinho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        select, input, button, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        select {
+            appearance: none;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .form-container {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .result-container h2 {
+            color: #007bff;
+            font-size: 1.25em;
+            margin-bottom: 10px;
+        }
+
+        pre, code {
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: #003366;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            position: relative;
+            z-index: 10;
+        }
+
+        img {
+            display: block;
+            margin: 10px auto;
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos para a extração de texto da imagem */
+        #extract_text label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        #extract_text input[type="file"] {
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #extract_text .btn {
+            margin-top: 10px;
+            background-color: #28a745;
+        }
+
+        #extract_text .btn:hover {
+            background-color: #218838;
+        }
+
+        .result-container .extracted-text {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            color: #333;
+            font-style: italic;
+            font-family: 'Courier New', Courier, monospace;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            select, input, button, textarea {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Escolha uma Ação</h1>
+    <select id="actionSelector" onchange="showForm()">
+        <option value="">Selecione uma ação</option>
+        <option value="create_image">Criar Imagem</option>
+        <option value="translate_code">Tradução/Geração de Código</option>
+        <option value="generate_summary">Sumarizar Texto</option>
+        <option value="extract_text">Extrair Texto de Imagem</option>
+    </select>
+
+    <!-- Formulários -->
+    <div id="create_image" class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form_imagem.input }}
+            <input type="hidden" name="action" value="create_image">
+            <button type="submit" class="btn">Gerar Imagem</button>
+        </form>
+    </div>
+
+    <div id="translate_code" class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form_traducao_codigo }}
+            <input type="hidden" name="action" value="translate_code">
+            <button type="submit" class="btn">Traduzir/Gerar Código</button>
+        </form>
+    </div>
+
+    <div id="generate_summary" class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form_sumario.pedido }}
+            <input type="hidden" name="action" value="generate_summary">
+            <button type="submit" class="btn">Sumarizar Texto</button>
+        </form>
+    </div>
+
+    <!-- Novo formulário para extração de texto da imagem -->
+    <div id="extract_text" class="form-container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="image">Selecione uma imagem:</label>
+            <input type="file" name="image" required>
+            <input type="hidden" name="action" value="extract_text">
+            <button type="submit" class="btn">Extrair Texto da Imagem</button>
+        </form>
+    </div>
+
+    <!-- Resultados -->
+    <div class="result-container">
+        {% if imagem_url %}
+            <h2>Imagem Gerada</h2>
+            <img src="{{ imagem_url }}" alt="Imagem">
+        {% endif %}
+
+        {% if dados %}
+            <h2>Resultado do Código</h2>
+            <pre><code>{{ dados }}</code></pre>
+        {% endif %}
+
+        {% if resposta %}
+            <h2>Sumário</h2>
+            <p>{{ resposta }}</p>
+        {% endif %}
+
+        {% if extracted_text %}
+            <h2>Conteúdo Extraído da Imagem</h2>
+            <p class="extracted-text">{{ extracted_text }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function showForm() {
+        const selectedAction = document.getElementById('actionSelector').value;
+        document.querySelectorAll('.form-container').forEach(form => form.style.display = 'none');
+        if (selectedAction) {
+            document.getElementById(selectedAction).style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Tradução e Geração de Código</title>
+    <style>
+        /* Configurações gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Estilo do corpo da página */
+        body {
+            background-color: #1e1e2f;
+            color: #ffffff; /* Todas as letras brancas */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Cabeçalho */
+        h1 {
+            color: #ffffff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 1.8em;
+            margin-top: 30px;
+        }
+
+        /* Estilo do formulário */
+        form {
+            background-color: #2e2e3f;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        form p {
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        /* Botão */
+        button[type="submit"] {
+            background-color: #81a1c1;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #5f7a99;
+        }
+
+        /* Estilo do parágrafo de resultado */
+        p {
+            background-color: #2e2e3f;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            color: #ffffff;
+            max-width: 600px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tradução e Geração de Código</h1>
+    <form method="post" action="{% url 'traduzecoda' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enviar</button>
+    </form>
+
+    {% if dados %}
+        <h2>Resultado:</h2>
+        <p>{{ dados }}</p>
+    {% endif %}
+</body>
+</html>

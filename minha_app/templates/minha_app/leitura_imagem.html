@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Leitura de Imagens</title>
+</head>
+<body>
+    <div class="container mt-5 p-5 mb-5 my-container-form">
+        <form 
+          action="{{ form_action }}"
+          method="POST"
+          enctype="multipart/form-data"
+          class="needs-validation"
+          novalidate
+        >
+          {% csrf_token %}
+          
+          <!-- Exibe os campos do formulário -->
+          {% for field in form %}
+            {% if forloop.counter != 4 %}
+              {{ field }}
+              <br><br>
+            {% endif %}
+          {% endfor %}
+          
+          <!-- Exibe erros de campo não específicos (se houver) -->
+          {% if form.non_field_errors %}
+              {{ form.non_field_errors }}
+          {% endif %}
+          
+          <!-- Botão de envio -->
+          <button type="submit" class="btn btn-primary mt-3">Enviar</button>
+        </form>
+    </div>
+    
+    <!-- Exibe a imagem, se uma URL foi fornecida -->
+    <div>
+        {% if description %}
+            <h2>{{description}}</h2>
+        {% endif %}
+    </div>
+</body>
+</html>
